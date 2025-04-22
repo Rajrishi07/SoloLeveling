@@ -6,3 +6,6 @@ myenv
 myenv\Scripts
 myenv\Scripts\activate
 .env
+CATEGORYXP_LINKS.CSV
+CATEGORYXP.CSV   
+test.ipynb
