@@ -101,9 +101,9 @@ def dexterity_score(metrics):
 
 def intelligence_score(metrics):
     category_metrics = {
-        'memory_span': (6, 8, 10, False),
+        'memory_span': (6, 9, 12, False),
         'logic_test': (40, 60, 80, False),
-        'reading_speed': (200, 300, 400, False),
+        'reading_speed': (300, 500, 800, False),
         'code_challenge_score': (50, 70, 90, False)
     }
     return calculate_category_score(metrics, category_metrics)
