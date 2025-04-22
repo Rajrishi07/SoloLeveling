@@ -150,7 +150,8 @@ def create_routes(app):
             getattr(current_user, "daily_quests", None),
             getattr(current_user, "weekly_quests", None),
             getattr(current_user, "elite_quests", None),
-            getattr(current_user, "epic_quests", None)
+            getattr(current_user, "epic_quests", None),
+            getattr(current_user, "habit_quests", None),
         ]):
             print("Some quests still loading — refreshing")
             return redirect(url_for('quests'))  # Reloads until all are ready
@@ -188,6 +189,7 @@ def create_routes(app):
             # Optional: mark the quest completed in the session or user model
             current_user.mark_quest_complete(quest_id)
             current_user.update_currency(difficulty)
+            current_user.update_oncomplete(quest_id)
             return jsonify({
                 "success": True,
                 "completed": True,

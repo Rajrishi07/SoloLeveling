@@ -327,20 +327,26 @@ def generate_quest(type=None, user=None):
 import json
 import re
 
-def text_to_quest(response):
-    print(response)
-    try:
-        # Step 1: Remove markdown-style triple backticks and optional language hints
-        response = re.sub(r"^```(?:python)?\s*", "", response.strip())
-        response = re.sub(r"\s*```$", "", response.strip())
+import re
+import json
 
-        # Step 2: Remove any inline comments like "# explanation"
+def text_to_quest(response):
+    print("Raw response:\n", response)
+
+    try:
+        # Remove triple backticks and optional language (supports ```json or ```python)
+        response = re.sub(r"^```(?:json|python)?\s*", "", response.strip())
+        response = re.sub(r"\s*```$", "", response)
+
+        # Optional: remove inline comments if you're expecting Python dicts
         response = re.sub(r'#.*', '', response)
 
-        # Step 3: Ensure true/false/null are lowercase (JSON standard)
+        # Convert Python-style values to JSON-style
         response = response.replace("True", "true").replace("False", "false").replace("None", "null")
 
-        # Step 4: Parse using json.loads
+        print("Cleaned response:\n", response)
+
+        # Parse JSON
         quests = json.loads(response)
         print("Returning quests as json")
         return quests

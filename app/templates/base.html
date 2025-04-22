@@ -118,54 +118,54 @@
         <div class="absolute inset-0 bg-gradient-to-br from-bg-dark/30 via-[#131326]/30 to-[#0A0A14]/30 backdrop-blur-none"></div>
     </div>
 
-    <nav class="relative z-50 bg-bg-dark/90 border-b border-primary/20 backdrop-blur-sm h-20">
+    <nav class="relative z-50 bg-bg-dark/90 border-b border-primary/20 backdrop-blur-sm h-16">
         <div class="max-w-7xl mx-auto h-full">
             <!-- Left: Logo + Links -->
-            <div class="absolute left-0 h-full flex items-center pl-4 gap-6">
+            <div class="absolute left-0 h-full flex items-center pl-3 gap-4">
                 <div class="flex-shrink-0 flex items-center gap-2">
-                    <img class="h-14 w-auto" src="/static/img/icon.png" alt="Solo Leveling Logo">
-                    <a href="/dashboard" class="text-primary font-orbitron font-bold text-3xl">SOLO LEVELING</a>
+                    <img class="h-10 w-auto" src="/static/img/icon.png" alt="Solo Leveling Logo">
+                    <a href="/dashboard" class="text-primary font-orbitron font-bold text-2xl tracking-wide">SOLO LEVELING</a>
                 </div>
-                <div class="hidden md:flex items-center gap-4">
-                    <a href="/dashboard" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Dashboard</a>
-                    <a href="/quests" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Quests</a>
-                    <a href="/shop" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Shop</a>
+                <div class="hidden md:flex items-center gap-3">
+                    <a href="/dashboard" class="text-text-primary hover:text-primary px-2 py-1.5 rounded-md text-sm font-medium transition-colors duration-200">Dashboard</a>
+                    <a href="/quests" class="text-text-primary hover:text-primary px-2 py-1.5 rounded-md text-sm font-medium transition-colors duration-200">Quests</a>
+                    <a href="/shop" class="text-text-primary hover:text-primary px-2 py-1.5 rounded-md text-sm font-medium transition-colors duration-200">Shop</a>
                 </div>
             </div>
-    
-            {% if current_user.is_authenticated %}
+            {%if current_user.is_authenticated%}
+
             <!-- Center: Currency -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 h-full flex items-center space-x-4 text-sm ml-10">
+            <div class="absolute left-1/2 transform -translate-x-1/2 h-full flex items-center space-x-3 text-sm">
                 <!-- Gold -->
-                <div class="flex items-center bg-gradient-to-br from-yellow-900 to-yellow-700 rounded-xl px-3 py-1.5 space-x-2 shadow-md border border-yellow-600">
-                    <img src="{{ url_for('static', filename='icons/gold.ico') }}" alt="Gold" class="w-7 h-7 rounded-sm shadow-inner">
-                    <span class="font-semibold text-yellow-300">{{ current_user.gold }}</span>
+                <div class="flex items-center bg-gradient-to-br from-yellow-900 to-yellow-700 rounded-lg px-2.5 py-1 space-x-1.5 shadow-md border border-yellow-600">
+                    <img src="/static/icons/gold.ico" alt="Gold" class="w-6 h-6 rounded-sm shadow-inner">
+                    <span class="font-semibold text-yellow-300 text-sm">{{current_user.gold}}</span>
                 </div>
                 <!-- Crystals -->
-                <div class="flex items-center bg-gradient-to-br from-blue-900 to-indigo-800 rounded-xl px-3 py-1.5 space-x-2 shadow-md border border-blue-500">
-                    <img src="{{ url_for('static', filename='icons/crystal.ico') }}" alt="Crystals" class="w-7 h-7 rounded-sm shadow-lg animate-pulse">
-                    <span class="font-semibold text-blue-300">{{ current_user.crystals }}</span>
+                <div class="flex items-center bg-gradient-to-br from-blue-900 to-indigo-800 rounded-lg px-2.5 py-1 space-x-1.5 shadow-md border border-blue-500">
+                    <img src="/static/icons/crystal.ico" alt="Crystals" class="w-6 h-6 rounded-sm shadow-lg animate-pulse">
+                    <span class="font-semibold text-blue-300 text-sm">{{current_user.crystals}}</span>
                 </div>
                 <!-- Essence Dust -->
-                <div class="flex items-center bg-gradient-to-br from-purple-900 to-fuchsia-800 rounded-xl px-3 py-1.5 space-x-2 shadow-md border border-fuchsia-500">
-                    <img src="{{ url_for('static', filename='icons/essence_dust.ico') }}" alt="Essence Dust" class="w-7 h-7 rounded-sm shadow-md">
-                    <span class="font-semibold text-fuchsia-300">{{ current_user.essence_dust }}</span>
+                <div class="flex items-center bg-gradient-to-br from-purple-900 to-fuchsia-800 rounded-lg px-2.5 py-1 space-x-1.5 shadow-md border border-fuchsia-500">
+                    <img src="/static/icons/essence_dust.ico" alt="Essence Dust" class="w-6 h-6 rounded-sm shadow-md">
+                    <span class="font-semibold text-fuchsia-300 text-sm">{{current_user.essence_dust}}</span>
                 </div>
                 <!-- Shadow Tokens -->
-                <div class="flex items-center bg-gradient-to-br from-indigo-900 to-purple-800 rounded-xl px-3 py-1.5 space-x-2 shadow-lg border border-purple-600">
-                    <img src="{{ url_for('static', filename='icons/shadow_token.ico') }}" alt="Shadow Tokens" class="w-7 h-7 rounded-sm shadow-xl animate-pulse">
-                    <span class="font-semibold text-indigo-100">{{ current_user.shadow_tokens }}</span>
+                <div class="flex items-center bg-gradient-to-br from-indigo-900 to-purple-800 rounded-lg px-2.5 py-1 space-x-1.5 shadow-lg border border-purple-600">
+                    <img src="/static/icons/shadow_token.ico" alt="Shadow Tokens" class="w-6 h-6 rounded-sm shadow-xl animate-pulse">
+                    <span class="font-semibold text-indigo-100 text-sm">{{current_user.shadow_tokens}}</span>
                 </div>
             </div>
     
-            <!-- Right: Username + Logout -->
-            <div class="absolute right-0 h-full flex items-center gap-4 pr-6">
-                <span class="text-text-muted text-base">{{ current_user.username }}</span>
-                <a href="/auth/logout" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Logout</a>
+            <!-- Right: User Info -->
+            <div class="absolute right-0 h-full flex items-center gap-3 pr-4">
+                <span class="text-text-muted text-sm">{{current_user.username}}</span>
+                <a href="/auth/logout" class="text-text-primary hover:text-primary px-2.5 py-1.5 rounded-md text-sm font-medium transition-colors duration-200">Logout</a>
             </div>
-            {% endif %}
         </div>
     </nav>
+    {%endif%}
     
 
 

@@ -1,4 +1,5 @@
 from re import M
+from site import ENABLE_USER_SITE
 from webbrowser import get
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -250,6 +251,7 @@ class User(UserMixin):
         if not getattr(self, "elite_quests", None):
             print("Refreshing Elite Quests")
             elite_quests = generate_quest(type="elite", user=self)
+            print("Elite Quest : ", elite_quests)
             if elite_quests:
                 # Insert quests into tasks collection
                 quest_ids = []
@@ -259,14 +261,14 @@ class User(UserMixin):
                     quest['created_at'] = today
                     result = mongo.db.tasks.insert_one(quest)
                     quest_ids.append(result.inserted_id)
-                
+                print("Elite Quest Inserted:")
                 # Update user with quest IDs
                 mongo.db.users.update_one(
                     {"_id": self._id},
                     {"$set": {"elite_quests": quest_ids}}
                 )
                 self.elite_quests = quest_ids
-    
+                print("Elite Quest Inserted to:")
         if not getattr(self, "epic_quests", None):
             print("Refreshing Epic Quests")
             epic_quests = generate_quest(type="epic", user=self)
@@ -478,7 +480,7 @@ class User(UserMixin):
     
 
     def update_currency(self, difficulty):
-        print("Updating Currency")
+        print("Updating Currency for difficulty:", difficulty)
         currency_reward_logic = {
             "easy": {"gold": 5, "crystals": 0, "shadow_tokens": 0, "essence_dust": 10},
             "moderate": {"gold": 8, "crystals": 0, "shadow_tokens": 0, "essence_dust": 20},
@@ -496,7 +498,8 @@ class User(UserMixin):
             self.essence_dust += rewards["essence_dust"]
             self.shadow_tokens += rewards["shadow_tokens"]
             self.save_currency()
-
+        else:
+            print(f"Unknown difficulty: {difficulty}")
     def save_currency(self):
         mongo.db.users.update_one(
             {"_id": self._id},
@@ -508,5 +511,28 @@ class User(UserMixin):
             }}
         )
 
+    def update_oncomplete(self, quest_id):
+        
+        try:
+            # Ensure quest_id is ObjectId if needed
+            quest_oid = ObjectId(quest_id) if isinstance(quest_id, str) else quest_id
 
+        except Exception as e:
+            print("Error comparing quest IDs:", e)
+            return
+        if quest_oid in self.elite_quests:
+            print("Removing quest from elite_quests ")
+            self.elite_quests = []
+            mongo.db.users.update_one(
+                {"_id": self._id},
+                {"$set": {"elite_quests": []}}
+            )
+        elif quest_oid in self.epic_quests:
+            print("Removing quest from epic_quests")
+            self.epic_quests = []
+            mongo.db.users.update_one(
+                {"_id": self._id},
+                {"$set": {"epic_quests": []}}
+            )
+            
     
