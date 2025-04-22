@@ -455,8 +455,17 @@ class User(UserMixin):
         # Apply penalties for incomplete tasks
         for task_id in incomplete_tasks:
             task = mongo.db.tasks.find_one({'_id': task_id})
-            penalty = task.get('penalty') if task else None
+            task_log = {
+                "user_id": ObjectId(user_id),
+                "task_name": task_name,
+                "date": datetime.utcnow(),
+                "status": "failed",
+                "reason": None,
+                "category_xp": adjusted_category_xp
+            }
+            mongo.db.tasks_log.insert_one(task_log)
 
+            penalty = task.get('penalty') if task else None
             if penalty:
                 existing = next((d for d in active_debuffs if d['name'] == penalty['name']), None)
                 print("Existing Debuff:", existing)
