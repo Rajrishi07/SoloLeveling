@@ -27,6 +27,7 @@
                         data-quest-xp='{{ quest.category_xp | tojson | safe }}'
                         data-quest-streakeligible = "{{ quest.streak_eligible }}"
                         data-quest-difficulty="{{ quest.difficulty }}"
+                        data-quest-description="{{ quest.description }}"
                         {% if current_user.is_quest_completed(quest._id) %}
                         class="opacity-50 pointer-events-none"
                         {% else %}
@@ -98,6 +99,7 @@
                         data-quest-xp='{{ quest.category_xp | tojson | safe }}'
                         data-quest-streakeligible = "{{ quest.streak_eligible }}"
                         data-quest-difficulty="{{ quest.difficulty }}"
+                        data-quest-description="{{ quest.description }}"
                         {% if current_user.is_quest_completed(quest._id) %}
                         class="opacity-50 pointer-events-none"
                         {% else %}
@@ -168,6 +170,7 @@
                             data-quest-xp='{{ quest.category_xp | tojson | safe }}'
                             data-quest-streakeligible = "{{ quest.streak_eligible }}"
                             data-quest-difficulty="{{ quest.difficulty }}"
+                            data-quest-description="{{ quest.description }}"
                             {% if not current_user.is_quest_completed(quest._id) %}
                                onclick="handleQuestClick(this)"
                             {% endif %}>
@@ -238,6 +241,7 @@
                             data-quest-xp='{{ quest.category_xp | tojson | safe }}'
                             data-quest-streakeligible = "{{ quest.streak_eligible }}"
                             data-quest-difficulty="{{ quest.difficulty }}"
+                            data-quest-description="{{ quest.description }}"
                             {if current_user.is_quest_completed(quest._id) %}
                             onclick="handleQuestClick(this)">
                             <div class="flex justify-between items-center mb-1.5">
@@ -303,6 +307,7 @@
                         data-quest-xp='{{ quest.category_xp | tojson | safe }}'
                         data-quest-streakeligible = "{{ quest.streak_eligible }}"
                         data-quest-difficulty="{{ quest.difficulty }}"
+                        data-quest-description="{{ quest.description }}"
                         {% if current_user.is_quest_completed(quest._id) %}
                         class="opacity-50 pointer-events-none"
                         {% else %}
@@ -365,6 +370,8 @@
         <h3 class="text-[#9D71EA] text-xl font-bold font-orbitron mb-3 border-b border-[#9D71EA]/20 pb-2">Complete Quest</h3>
         <p class="text-white text-2xl" id="questName">Quest Name</p>
         <p class="text--white text-sm mb-4" id="questDifficulty">Difficulty</p>
+        <p class="text--white text-sm mb-4" id="questDescription">Description</p> 
+        
         <div class="mb-4">
             <p class="text-[#9D71EA] text-sm mb-2 font-tech">XP Rewards:</p>
             <div id="questXpRewards" class="flex flex-wrap gap-1.5"></div>
@@ -525,7 +532,7 @@ function handleQuestClick(element) {
     const questXp = JSON.parse(element.dataset.questXp);
     const streakEligible = element.dataset.questStreakeligible === "True";
     const questDifficulty = element.dataset.questDifficulty;
-
+    const questDescription = element.dataset.questDescription;
     currentQuestId = questId;
     currentQuestName = questName;
     currentQuestXp = questXp;
@@ -535,6 +542,7 @@ function handleQuestClick(element) {
     // Set modal content
     document.getElementById('questName').textContent = questName;
     document.getElementById('questDifficulty').textContent = questDifficulty;
+    document.getElementById('questDescription').textContent = questDescription;
     console.log('quest difficulty:', currentQuestDifficulty);
     // Clear and populate XP rewards
     const rewardsContainer = document.getElementById('questXpRewards');
