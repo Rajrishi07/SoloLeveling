@@ -1,0 +1,274 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 text-white">
+    <h1 class="text-4xl font-orbitron text-[#00BFFF] mb-8 text-center tracking-wider">Hunter Exam 2.0</h1>
+
+    <form id="examForm2" action="{{ url_for('exam.submit_exam2') }}" method="POST" class="space-y-6">
+        <!-- Global Settings -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Global Settings</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-300 mb-2">Body Type</label>
+                    <select id="bodyType" name="bodyType" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white">
+                        <option value="ectomorph">Ectomorph</option>
+                        <option value="mesomorph" selected>Mesomorph</option>
+                        <option value="endomorph">Endomorph</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Gender</label>
+                    <select id="gender" name="gender" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white">
+                        <option value="male" selected>Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Bodyweight (kg)</label>
+                    <input id="bodyweight" name="bodyweight" type="number" value="70" min="30" max="200" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Strength -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Strength Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for metric, link, name, default in [
+                    ['Deadlift (1RM)', 'https://strengthlevel.com/strength-standards/deadlift', 'deadlift_1rm', '130'],
+                    ['Bench Press (1RM)', 'https://strengthlevel.com/strength-standards/bench-press', 'bench_press_1rm', '85'],
+                    ['Squat (1RM)', 'https://strengthlevel.com/strength-standards/squat', 'squat_1rm', '115'],
+                    ['Overhead Press (1RM)', 'https://strengthlevel.com/strength-standards/overhead-press', 'overhead_press_1rm', '50'],
+                    ['Pull-ups (max reps)', 'https://strengthlevel.com/bodyweight/strength-standards/pull-up', 'pullups', '12'],
+                    ['Push-ups (1-min)', 'https://strengthlevel.com/bodyweight/strength-standards/push-up', 'pushups', '30'],
+                    ['Plank Hold (sec)', 'https://www.topendsports.com/testing/tests/plank.htm', 'plank_hold', '120'],
+                    ['Wall Sit (sec)', 'https://www.topendsports.com/testing/tests/wall-sit.htm', 'wall_sit', '90']
+                ] %}
+                <div>
+                    <label class="block text-gray-300 mb-2">{{ metric }}</label>
+                    <div class="flex gap-2">
+                        <input name="{{ name }}" type="number" value="{{ default }}" min="0" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                        <a href="{{ link }}" target="_blank" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl text-sm">Test</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- Vitality -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Vitality Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for metric, link, name, default in [
+                    ['Resting Heart Rate (bpm)', 'https://www.heart.org/en/healthy-living/fitness/fitness-basics/target-heart-rates', 'resting_heart_rate', '70'],
+                    ['3-Min Step Test Recovery (bpm)', 'https://www.topendsports.com/testing/tests/step-home.htm', 'step_test_recovery', '102'],
+                    ['Sleep Duration (hrs)', 'https://www.sleepfoundation.org/how-sleep-works/how-much-sleep-do-we-really-need', 'sleep_duration', '7'],
+                    ['Hydration (L/day)', 'https://www.calculator.net/hydration-calculator.html', 'hydration', '2.5']
+                ] %}
+                <div>
+                    <label class="block text-gray-300 mb-2">{{ metric }}</label>
+                    <div class="flex gap-2">
+                        <input name="{{ name }}" type="number" value="{{ default }}" min="0" step="0.1" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                        <a href="{{ link }}" target="_blank" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl text-sm">Test</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Agility -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Agility Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for metric, link, name, default in [
+                    ['100m Sprint (sec)', 'https://www.topendsports.com/testing/tests/100m.htm', 'sprint_100m', '13.0'],
+                    ['Side Hops (20s)', 'https://www.topendsports.com/testing/tests/side-hops.htm', 'side_hops', '40'],
+                    ['Change Direction (ms)', 'https://www.topendsports.com/testing/tests/505.htm', 'change_direction', '800'],
+                    ['Dual Task Score', 'https://cognitivefun.net/test/6', 'dual_task_score', '70']
+                ] %}
+                <div>
+                    <label class="block text-gray-303 mb-2">{{ metric }}</label>
+                    <div class="flex gap-2">
+                        <input name="{{ name }}" type="number" value="{{ default }}" min="0" step="0.1" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                        <a href="{{ link }}" target="_blank" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl text-sm">Test</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Dexterity -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Dexterity Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for metric, link, name, default in [
+                    ['Typing Speed (WPM)', 'https://10fastfingers.com/typing-test/english', 'typing_wpm', '60'],
+                    ['Typing Accuracy (%)', 'https://10fastfingers.com/typing-test/english', 'typing_accuracy', '95'],
+                    ['Reaction Time (ms)', 'https://humanbenchmark.com/tests/reactiontime', 'reaction_time', '250'],
+                    ['Cube Solve Time (s)', 'https://cstimer.net/', 'cube_time', '30']
+                ] %}
+                <div>
+                    <label class="block text-gray-300 mb-2">{{ metric }}</label>
+                    <div class="flex gap-2">
+                        <input name="{{ name }}" type="number" value="{{ default }}" min="0" step="0.1" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                        <a href="{{ link }}" target="_blank" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl text-sm">Test</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Intelligence -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Intelligence Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for metric, link, name, default in [
+                    ['Memory Span (digits)', 'https://humanbenchmark.com/tests/number-memory', 'memory_span', '8'],
+                    ['Logic Test (%)', 'https://www.mensa.org/workout', 'logic_test', '60'],
+                    ['Reading Speed (WPM)', 'https://www.spreeder.com/app/test', 'reading_speed', '300'],
+                    ['Code Challenge (%)', 'https://www.hackerrank.com/skills-verification', 'code_challenge_score', '70']
+                ] %}
+                <div>
+                    <label class="block text-gray-300 mb-2">{{ metric }}</label>
+                    <div class="flex gap-2">
+                        <input name="{{ name }}" type="number" value="{{ default }}" min="0" step="0.1" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                        <a href="{{ link }}" target="_blank" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl text-sm">Test</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Charisma -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Charisma Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for metric, link, name, default in [
+                    ['Empathy Score', 'https://greatergood.berkeley.edu/quizzes/take_quiz/emotional_intelligence', 'empathy_score', '75'],
+                    ['New Socials/week', 'https://habitica.com/', 'new_socials', '5'],
+                    ['Conflict Resolution (%)', 'https://greatergood.berkeley.edu/quizzes/take_quiz/emotional_intelligence', 'conflict_resolution_score', '80'],
+                    ['Public Presence (%)', 'https://www.toastmasters.org/resources/public-speaking-tip-sheets', 'public_presence_score', '75']
+                ] %}
+                <div>
+                    <label class="block text-gray-300 mb-2">{{ metric }}</label>
+                    <input name="{{ name }}" type="number" value="{{ default }}" min="0" step="0.1" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Willpower -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Willpower Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for metric, link, name, default in [
+                    ['Plank Hold (sec)', 'https://www.topendsports.com/testing/tests/plank.htm', 'plank_hold', '120'],
+                    ['Meditation (min/day)', 'https://insighttimer.com/', 'meditation', '15'],
+                    ['Deep Work (min)', 'https://pomofocus.io/', 'deep_work', '60'],
+                    ['Morning Routine (days/wk)', 'https://habitica.com/', 'morning_routine', '5']
+                ] %}
+                <div>
+                    <label class="block text-gray-300 mb-2">{{ metric }}</label>
+                    <div class="flex gap-2">
+                        <input name="{{ name }}" type="number" value="{{ default }}" min="0" step="0.1" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                        <a href="{{ link }}" target="_blank" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl text-sm">Test</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Perception -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <h4 class="text-[#00BFFF] font-orbitron text-xl mb-4">Perception Assessment</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for metric, link, name, default in [
+                    ['Pattern Recognition (%)', 'https://www.arealme.com/pattern-recognition-test/en/', 'pattern_recognition', '80'],
+                    ['Spatial Rotation (score)', 'https://www.123test.com/spatial-reasoning-test/', 'spatial_rotation', '8'],
+                    ['Auditory Discrimination (score)', 'https://www.forbrain.com/free-auditory-processing-disorder-test/', 'auditory_discrimination', '15'],
+                    ['Color Differentiation (level)', 'https://colorfind.org/', 'color_diff_level', '15']
+                ] %}
+                <div>
+                    <label class="block text-gray-300 mb-2">{{ metric }}</label>
+                    <div class="flex gap-2">
+                        <input name="{{ name }}" type="number" value="{{ default }}" min="0" step="0.1" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white" />
+                        <a href="{{ link }}" target="_blank" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl text-sm">Test</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="bg-primary text-white font-bold py-2 px-6 rounded-xl hover:bg-primary/90 transition text-lg" id="CalculateScoreButton">Calculate Score</button>
+        </div>
+    </form>
+
+    <!-- RESULTS BOX -->
+    <div id="results2" class="mt-10 hidden">
+        <div class="sl-card rounded-2xl overflow-hidden border-2 border-[#00FF99]/30 bg-[#0A0A14]/90 backdrop-blur-sm p-6">
+            <h4 class="text-[#00FF99] font-orbitron text-2xl mb-4">Exam Results</h4>
+            <div id="scoreBreakdown" class="text-white text-lg"></div>
+            <div id="goToDashboard" class="text-center mt-6 hidden">
+                <a href="{{ url_for('dashboard') }}" class="bg-[#00FF99] text-white font-orbitron py-3 px-8 rounded-xl hover:bg-[#00FF99]/80 transition-all duration-300 text-lg shadow-lg shadow-[#00FF99]/20 transform hover:scale-105">Go to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('examForm2').addEventListener('submit', function(e) {
+        e.preventDefault();
+    
+        const submitBtn = this.querySelector('button[type="submit"]');
+        if (submitBtn.disabled) return; // prevent re-submission
+    
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+    
+        fetch('{{ url_for("exam.submit_exam2") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(d => {
+            if (d.success) {
+                submitBtn.disabled = true;
+    
+                // Show result card
+                document.getElementById('results2').classList.remove('hidden');
+                document.getElementById('results2').scrollIntoView({ behavior: 'smooth' });
+    
+                // Build XP breakdown
+                let scoreDetails = "<ul class='text-white text-lg space-y-1'>";
+                scoreDetails += `<li><b>Strength:</b> ${d.results.strength_xp} XP</li>`;
+                scoreDetails += `<li><b>Dexterity:</b> ${d.results.dexterity_xp} XP</li>`;
+                scoreDetails += `<li><b>Perception:</b> ${d.results.perception_xp} XP</li>`;
+                scoreDetails += `<li><b>Agility:</b> ${d.results.agility_xp} XP</li>`;
+                scoreDetails += `<li><b>Vitality:</b> ${d.results.vitality_xp} XP</li>`;
+                scoreDetails += `<li><b>Willpower:</b> ${d.results.willpower_xp} XP</li>`;
+                scoreDetails += `<li><b>Charisma:</b> ${d.results.charisma_xp} XP</li>`;
+                scoreDetails += `<li><b>Intelligence:</b> ${d.results.intelligence_xp} XP</li>`;
+                scoreDetails += `<li class='mt-2 text-[#00FF99] font-bold'>Total XP: ${d.results.total_xp}</li>`;
+                scoreDetails += "</ul>";
+                document.getElementById('scoreBreakdown').innerHTML = scoreDetails;
+                document.getElementById('CalculateScoreButton').classList.add('hidden')
+                // Show dashboard button
+                document.getElementById('goToDashboard').classList.remove('hidden');
+            } else {
+                alert('Server Error: ' + d.message);
+            }
+        })
+        .catch(error => {
+            console.error('Request failed:', error);
+            alert('Error: ' + error.message);
+        });
+    });
+    </script>
+{% endblock %}
