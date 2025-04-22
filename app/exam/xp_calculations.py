@@ -132,7 +132,7 @@ def perception_score(metrics):
         'pattern_recognition': (60, 80, 95, False),
         'spatial_rotation': (5, 8, 10, False),
         'auditory_discrimination': (10, 15, 20, False),
-        'color_differentiation': (25, 15, 5, True)
+        'color_differentiation': (13, 23, 35, True)
     }
     return calculate_category_score(metrics, category_metrics)
 
