@@ -84,7 +84,7 @@ def agility_score(metrics, gender='male', bodyweight=70):
 
     category_metrics = {
         'sprint_100m': (*sprint, True),
-        'side_hops': (30, 40, 50, False),
+        'side_hops': (15, 27, 40, False),
         'change_direction': (1000, 800, 700, True),
         'dual_task_score': (50, 70, 90, False)
     }
