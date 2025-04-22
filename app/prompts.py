@@ -27,7 +27,7 @@ Respond with a valid Python list of dictionaries. No markdown, no explanations. 
 🔔 Only include a penalty for core, mission-critical tasks — ones where failure would damage user progress (e.g., hydration, training, no-screen detox).
 ❌ Leave penalty: null or omit it entirely for optional or non-crucial challenges. Do NOT add penalties to all tasks.
 Dont show category_xp for categories having 0 XP.
-
+❌ streak_eligible: false ,keep streak_eligible as False always. 
 category_xp_changes:
 python
 '''
@@ -95,7 +95,7 @@ Return a **Python list of dictionaries**. No markdown or extra text. Use the exa
 🔔 Only include a penalty for core, mission-critical tasks — ones where failure would damage user progress (e.g., hydration, training, no-screen detox).
 ❌ Leave penalty: null or omit it entirely for optional or non-crucial challenges. Do NOT add penalties to all tasks.
 Dont show category_xp for categories having 0 XP.
-
+❌ streak_eligible: false ,keep streak_eligible as False always. 
 [
   {
     "name": "Task Name",
@@ -145,7 +145,7 @@ Return **one** Python dictionary wrapped in a list. Follow this structure *exact
 🔔 Only include a penalty for core, mission-critical tasks — ones where failure would damage user progress (e.g., hydration, training, no-screen detox).
 ❌ Leave penalty: null or omit it entirely for optional or non-crucial challenges. Do NOT add penalties to all tasks.
 Dont show category_xp for categories having 0 XP.
-
+❌ streak_eligible: false ,keep streak_eligible as False always. 
 [
   {
     "name": "Name of the task",
