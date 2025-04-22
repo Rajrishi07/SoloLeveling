@@ -1,0 +1,8 @@
+
+__pycache__
+auth\__pycache__
+exam\__pycache__
+myenv
+myenv\Scripts
+myenv\Scripts\activate
+.env

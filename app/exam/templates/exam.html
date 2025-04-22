@@ -1,0 +1,589 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 text-white">
+    <h1 class="text-4xl font-orbitron text-[#00BFFF] mb-8 text-center tracking-wider">Hunter Exam</h1>
+    <div class="sl-card border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 text-white card-glow-primary p-6 mb-8 rounded-2xl backdrop-blur-sm">
+        <h4 class="text-[#00BFFF] font-orbitron text-2xl mb-4 tracking-wide">Welcome to the Hunter Exam!</h4>
+        <p class="text-gray-300 mb-3 font-tech">Complete all sections to determine your overall rank. Your total XP will be calculated based on your performance in each category.</p>
+        <p class="text-gray-300 mb-4 font-tech">This exam will establish your baseline stats and determine your initial rank. Take your time and be honest with your assessments.</p>
+        <div class="w-full h-[2px] bg-gradient-to-r from-[#00BFFF]/10 via-[#00BFFF]/40 to-[#00BFFF]/10 my-4 rounded-full"></div>
+        <p class="text-[#FF4B4B] font-tech mb-0">Note: You can only take this exam once. Your results will be permanently recorded.</p>
+    </div>
+
+    <form id="examForm" action="{{ url_for('exam.submit_exam') }}" method="POST" class="space-y-6">
+        <!-- Global Settings -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Global Settings</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Body Type</label>
+                        <select class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" id="bodyType">
+                            <option value="ectomorph">Ectomorph</option>
+                            <option value="mesomorph" selected>Mesomorph</option>
+                            <option value="endomorph">Endomorph</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Gender</label>
+                        <select class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" id="gender">
+                            <option value="male" selected>Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strength Section -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Strength Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Bodyweight (kg)</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" id="bodyweight" value="70" min="30" max="200">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Deadlift (kg)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="deadlift_kg" min="0" value="130">
+                            <a href="https://strengthlevel.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Bench Press (kg)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="benchpress_kg" min="0" value="85">
+                            <a href="https://strengthlevel.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Squat (kg)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="squat_kg" min="0" value="115">
+                            <a href="https://strengthlevel.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Push-ups (reps)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="pushups" min="0" value="35">
+                            <a href="https://strengthlevel.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Pull-ups (reps)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="pullups" min="0" value="12">
+                            <a href="https://strengthlevel.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Squats (reps)</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="squats" min="0" value="35">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Dead Hang (s)</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="deadhang" min="0" value="35">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dexterity Section -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Dexterity Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Typing Speed (WPM)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="typing_wpm" min="0" step="1" value="40">
+                            <a href="https://10fastfingers.com/typing-test/english" class="text-xs font-tech px-3 py-1 border border-primary/30 text-primary rounded-md hover:bg-primary/10 transition" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Typing Accuracy (%)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="typing_accuracy" min="0" max="100" step="0.1" value="92">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Reaction Time (ms)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="reaction_time" min="0" step="0.001" value="0.273">
+                            <a href="https://humanbenchmark.com/tests/reactiontime" class="text-xs font-tech px-3 py-1 border border-primary/30 text-primary rounded-md hover:bg-primary/10 transition" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Tap Accuracy (%)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="tap_accuracy" min="0" max="100" step="0.1" value="90">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Cube Time (seconds)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="cube_time" min="0" step="0.1" value="30">
+                            <a href="https://cstimer.net/" class="text-xs font-tech px-3 py-1 border border-primary/30 text-primary rounded-md hover:bg-primary/10 transition" target="_blank">Test</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Perception Section -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Perception Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Pattern Recognition Score</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="pattern_recognition" min="0" max="100" step="0.1" value="70">
+                            <a href="https://www.arealme.com/pattern-recognition-test/en/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Spatial Rotation Score</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="spatial_rotation" min="0" max="10" step="0.1" value="7">
+                            <a href="https://www.123test.com/spatial-reasoning-test/#its123-testAnchor" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Auditory Discrimination</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="auditory_discrimination" min="0" max="20" step="0.1" value="14">
+                            <a href="https://www.forbrain.com/free-auditory-processing-disorder-test/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Peripheral Response Score</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="peripheral_response" min="0" max="10" step="0.1" value="8">
+                            <a href="https://cognitivefun.net/task/cogfun-23-spatial-working-memory" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Color Differentiation Level</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="color_diff_level" min="0" max="30" step="1" value="20">
+                            <a href="https://colorfind.org/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Object Tracking Score</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="object_tracking" min="0" max="10" step="0.1" value="7">
+                            <a href="https://humanbenchmark.com/tests/number-memory" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vitality Section -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Vitality Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Resting Heart Rate (bpm)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="rhr" min="0" step="1" value="75">
+                            <a href="https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/monitoring-your-blood-pressure-at-home" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Guide</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Sleep Quality Score</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="sleep_quality" min="0" max="100" step="0.1" value="80">
+                            <a href="https://www.sleepfoundation.org/sleep-tools-tests" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">VO2 Max</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="vo2_max" min="0" step="0.1" value="42">
+                            <a href="https://www.runnersworld.com/uk/training/a761676/vo2-max-calculator/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Calculate</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Heart Rate Variability (ms)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="hrv" min="0" step="1" value="70">
+                            <a href="https://elitehrv.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Step Test Recovery (bpm)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="step_test_recovery" min="0" step="1" value="40">
+                            <a href="https://www.topendsports.com/testing/tests/step-home.htm" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Daily Hydration (liters)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="hydration_liters" min="0" step="0.1" value="2.5">
+                            <a href="https://www.calculator.net/hydration-calculator.html" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Calculate</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agility Section -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Agility Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">100m Sprint Time (seconds)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="sprint_100m" min="0" step="0.1" value="12.0">
+                            <a href="https://www.topendsports.com/testing/tests/100m.htm" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Guide</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Side Hops (count)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="side_hops" min="0" step="1" value="40">
+                            <a href="https://www.topendsports.com/testing/tests/side-hops.htm" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Y Test Score (cm)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="y_test" min="0" max="100" step="0.1" value="80">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Dual Task Score</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="dual_task_score" min="0" max="100" step="0.1" value="80">
+                            <a href="https://cognitivefun.net/test/6" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Change Direction Reaction (ms)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="change_direction_reaction" min="0" step="0.01" value="0.70">
+                            <a href="https://www.topendsports.com/testing/tests/505.htm" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Willpower Section -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Willpower Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Plank Time (seconds)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="plank_time" min="0" step="1" value="150">
+                            <a href="https://www.topendsports.com/testing/tests/plank.htm" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Meditation Minutes</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="meditation_minutes" min="0" step="1" value="15">
+                            <a href="https://insighttimer.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Timer</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Deep Work Block (minutes)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="deep_work_block" min="0" step="1" value="60">
+                            <a href="https://pomofocus.io/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Timer</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Detox Tasks Completed</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="detox_tasks_done" min="0" step="1" value="5">
+                            <a href="https://habitica.com/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Track</a>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Delayed Gratification Score</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="delayed_gratification_score" min="0" max="100" step="0.1" value="80">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Wall Sit Time (seconds)</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="wall_sit_time" min="0" step="1" value="120">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Wake-up Consistency (days/week)</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="wakeup_consistency" min="0" max="7" step="0.1" value="5">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Charisma Section -->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Charisma Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Empathy Score</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="empathy_score" min="0" max="100" step="0.1" value="70">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Active Listening Minutes</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="active_listening_minutes" min="0" step="1" value="30">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">New Social Interactions</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="new_social_interactions" min="0" step="1" value="4">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Conflict Resolution Score</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="conflict_resolution_score" min="0" max="100" step="0.1" value="70">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Humor Score</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="humor_score" min="0" max="100" step="0.1" value="70">
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Public Presence Score</label>
+                        <input type="number" class="w-full bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="public_presence_score" min="0" max="100" step="0.1" value="70">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Intelligence Section-->
+        <div class="sl-card rounded-2xl p-6 border-2 border-[#00BFFF]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="card-header mb-4">
+                <h4 class="text-[#00BFFF] font-orbitron text-xl tracking-wide">Intelligence Assessment</h4>
+            </div>
+            <div class="card-body">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Memory Span -->
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Memory Span (digits/words)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="memory_span" min="0" step="1" value="7">
+                            <a href="https://www.humanbenchmark.com/tests/number-memory" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <!-- Logic Test Percentile -->
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Logic Test Percentile</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="logic_test_percentile" min="0" max="100" step="1" value="70">
+                            <a href="https://www.mensa.org/workout" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <!-- Problem Solving Speed -->
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Problem Solving Speed (sec)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="problem_solving_speed" min="0" step="1" value="90">
+                            <a href="https://www.brainzilla.com/logic/logic-grid/" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Puzzle</a>
+                        </div>
+                    </div>
+                    <!-- Reading Speed -->
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Reading Speed (WPM)</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="reading_speed_wpm" min="0" step="1" value="250">
+                            <a href="https://www.spreeder.com/app/test" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                    <!-- Code Challenge Score -->
+                    <div>
+                        <label class="block text-gray-300 font-tech mb-2">Code Challenge Score</label>
+                        <div class="flex gap-2">
+                            <input type="number" class="flex-1 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 rounded-xl px-4 py-2 text-white font-tech focus:border-[#00BFFF] focus:ring-1 focus:ring-[#00BFFF] transition-all" name="code_challenge_score" min="0" max="100" step="1" value="70">
+                            <a href="https://www.hackerrank.com/skills-verification" class="px-4 py-2 bg-[#1A1A2E] border-2 border-[#00BFFF]/30 text-[#00BFFF] rounded-xl hover:bg-[#00BFFF]/10 transition-all font-tech text-sm" target="_blank">Test</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="bg-primary text-white font-bold py-2 px-6 rounded-xl hover:bg-primary/90 transition text-lg shadow-md shadow-primary/20">Calculate Score</button>
+        </div>
+    </form>
+
+    <!-- Results Section -->
+    <div id="results" class="mt-8" style="display: none;">
+        <div class="sl-card rounded-2xl overflow-hidden border-2 border-[#00FF99]/30 bg-[#0A0A14]/90 backdrop-blur-sm">
+            <div class="bg-[#00FF99]/20 border-b-2 border-[#00FF99]/40 py-4 px-6">
+                <h4 class="text-[#00FF99] font-orbitron text-2xl tracking-wide mb-0">Exam Results</h4>
+            </div>
+        </div>
+        <div class="card-body">
+
+                <!-- XP Breakdown -->
+            <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Strength</h5>
+                                <p class="card-text" id="strength_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Dexterity</h5>
+                                <p class="card-text" id="dexterity_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Perception</h5>
+                                <p class="card-text" id="perception_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Agility</h5>
+                                <p class="card-text" id="agility_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Vitality</h5>
+                                <p class="card-text" id="vitality_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Willpower</h5>
+                                <p class="card-text" id="willpower_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Charisma</h5>
+                                <p class="card-text" id="charisma_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Intelligence</h5>
+                                <p class="card-text" id="intelligence_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="sl-card rounded-2xl p-4 mb-4 shadow-lg border border-primary/20 bg-bg-dark/60 text-white h-100 bg-primary text-white">
+                            <div class="card-body">
+                                <h5 class="card-title">Total XP</h5>
+                                <p class="card-text" id="total_xp">0 XP</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="bg-[#00FF99] text-white font-orbitron py-3 px-8 rounded-xl hover:bg-[#00FF99]/80 transition-all duration-300 text-lg shadow-lg shadow-[#00FF99]/20 transform hover:scale-105">Go to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('examForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Collect all form data
+    const formData = new FormData(this);
+    const data = {};
+    for (let [key, value] of formData.entries()) {
+        data[key] = value;
+        console.log(key, value);
+    }
+    
+    // Add global settings
+    data['bodyweight'] = document.getElementById('bodyweight').value;
+    data['gender'] = document.getElementById('gender').value;
+    data['bodyType'] = document.getElementById('bodyType').value;
+    
+    // Submit exam
+    fetch('{{ url_for("exam.submit_exam") }}', {
+                    method: 'POST',
+                    headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update XP values
+            document.getElementById('strength_xp').textContent = data.results.strength_xp + ' XP';
+            document.getElementById('dexterity_xp').textContent = data.results.dexterity_xp + ' XP';
+            document.getElementById('perception_xp').textContent = data.results.perception_xp + ' XP';
+            document.getElementById('agility_xp').textContent = data.results.agility_xp + ' XP';
+            document.getElementById('vitality_xp').textContent = data.results.vitality_xp + ' XP';
+            document.getElementById('willpower_xp').textContent = data.results.willpower_xp + ' XP';
+            document.getElementById('charisma_xp').textContent = data.results.charisma_xp + ' XP';
+            document.getElementById('intelligence_xp').textContent = data.results.intelligence_xp + ' XP';
+            document.getElementById('total_xp').textContent = data.results.total_xp + ' XP';
+
+
+            // Show results section
+            document.getElementById('results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting exam: ' + error.message);
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-[#0A0A14] text-[#ECECEC] p-4">
+ 
+  {% set rarity_colors = {
+    'common': '#CCCCCC',
+    'uncommon': '#00FF99',
+    'rare': '#00BFFF',
+    'epic': '#9D71EA',
+    'legendary': '#FFD700'
+  } %}
+  
+  <div class="bg-[#0A0A14] border border-[#FF3C3C]/30 rounded-xl p-6 text-center shadow-lg card-glow-cursed">
+    <h2 class="text-2xl font-orbitron text-[#FF3C3C] drop-shadow-[0_0_8px_rgba(255,60,60,0.6)] animate-pulse">
+      🛑 Shop Closed
+    </h2>
+    <p class="text-[#CCCCCC] text-sm mt-2">
+      Come back later when the Shadow Market opens again.
+    </p>
+  </div>
+  
+  <!-- Shop Sections -->
+  <div class="space-y-12">
+    {% set sections = [
+      {'type':'booster','label':'Boosters','color':'#00FF99','icon':'🧪'},
+      {'type':'equipment','label':'Equipment','color':'#00BFFF','icon':'🛡️'},
+      {'type':'service','label':'Services','color':'#FFD700','icon':'📜'}
+    ] %}
+
+    {% for section in sections %}
+    <section>
+      <h2 class="text-2xl font-orbitron mb-4 flex items-center gap-2" style="color: {{ section.color }};">
+        <span>{{ section.icon }}</span> {{ section.label }}
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for item in shop_items if item.type == section.type %}
+        <div class="group relative bg-[#131326] rounded-2xl p-4 shadow-lg hover:scale-105 transition-transform duration-300 border" style="border-color: {{ section.color }}33;">
+          <div class="flex items-center gap-3 mb-3">
+            
+            <h3 class="text-lg font-bold">{{ item.name }}</h3>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-4">
+            {% for curr, cost in item.currency_cost.items() %}
+            <div class="flex items-center gap-1 text-sm font-medium">
+              {% if curr == 'gold' %}
+                <img src="{{ url_for('static', filename='icons/gold.ico') }}" class="w-7 h-7">
+              {% elif curr == 'crystals' %}
+                <img src="{{ url_for('static', filename='icons/crystal.ico') }}" class="w-7 h-7">
+              {% elif curr == 'essence_dust' %}
+                <img src="{{ url_for('static', filename='icons/essence_dust.ico') }}" class="w-7 h-7">
+              {% elif curr == 'shadow_tokens' %}
+                <img src="{{ url_for('static', filename='icons/shadow_token.ico') }}" class="w-7 h-7">
+              {% endif %}
+              {{ cost }}
+            </div>
+            {% endfor %}
+          </div>
+          <button class="w-full py-2 rounded-full font-bold text-sm transition-colors" style="background-color: {{ section.color }}33;" onmouseover="this.style.backgroundColor='{{ section.color }}44'" onmouseout="this.style.backgroundColor='{{ section.color }}33'">Buy</button>
+
+          <!-- Hover Details -->
+          <div class="absolute inset-0 bg-black/80 p-4 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center text-sm space-y-2">
+            <p><strong>Effect:</strong> {{ item.effect }}</p>
+            <p><strong>Duration:</strong>
+              {% if item.duration_hours is defined %}
+                {{ item.duration_hours }} hours
+              {% elif item.duration_days is defined %}
+                {{ item.duration_days }} days
+              {% else %}
+                Permanent
+              {% endif %}
+            </p>
+            <p><strong>Rarity:</strong>
+              <span class="px-2 py-0.5 rounded-full text-xs font-mono" style="background-color: {{ rarity_colors[item.rarity] }}33; color: {{ rarity_colors[item.rarity] }};">
+                {{ item.rarity | capitalize }}
+              </span>
+            </p>
+            <p><strong>Tags:</strong>
+              <span class="flex flex-wrap gap-1 mt-1">
+                {% for tag in item.tags %}
+                <span class="px-2 py-0.5 bg-[#CCCCCC]/20 rounded-full text-xs font-mono">{{ tag }}</span>
+                {% endfor %}
+              </span>
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+@keyframes progress {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+.animate-progress { animation: progress 1.5s ease-out forwards; }
+</style>
+{% endblock %}

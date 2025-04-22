@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Leveling {% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Share+Tech+Mono&family=Rajdhani:wght@400;500;700&family=Audiowide&family=Oxanium:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-dark': '#0F0F1A',
+                        'primary': '#00BFFF',
+                        'secondary': '#7FDBFF',
+                        'danger': '#FF3C3C',
+                        'success': '#00FF99',
+                        'text-primary': '#E0E0E0',
+                        'text-muted': '#A0A0A0',
+                        'glow-blue': 'rgba(0, 191, 255, 0.4)',
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'tech': ['Share Tech Mono', 'monospace'],
+                        'rajdhani': ['Rajdhani', 'sans-serif'],
+                        'audiowide': ['Audiowide', 'cursive'],
+                        'oxanium': ['Oxanium', 'cursive'],
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 3s infinite',
+                        'progress-shine': 'progress-shine 2s infinite',
+                    },
+                    keyframes: {
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        },
+                        'progress-shine': {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    },
+                    textShadow: {
+                        'glow': '0 0 4px #fff, 0 0 2px #00BFFF, 0 0 20px #00BFFF, 0 0 30px #00BFFF',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .text-glow {
+            text-shadow: 0 0 4px #fff, 0 0 2px #00BFFF, 0 0 20px #00BFFF, 0 0 30px #00BFFF;
+        }
+        
+        .sl-card {
+            background: rgba(15, 15, 26, 0.8);
+            border: 1px solid rgba(0, 191, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.1);
+        }
+
+        .sl-button {
+            background: linear-gradient(180deg, #00BFFF 0%, #7FDBFF 100%);
+            color: #0F0F1A;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Audiowide', cursive;
+        }
+
+        .sl-button:hover {
+            background: linear-gradient(180deg, #7FDBFF 0%, #00BFFF 100%);
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .stat-value {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .system-text {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        
+        /* Update the styles to include quests page */
+        body.dashboard-page,
+        body.quests-page {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard-content,
+        .quests-content {
+            height: calc(100vh - 64px);
+            overflow: hidden;
+        }
+
+        .dashboard-scrollable,
+        .quests-scrollable {
+            height: 100%;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="text-text-primary font-oxanium {% if request.endpoint == 'dashboard' %}dashboard-page{% elif request.endpoint == 'quests' %}quests-page{% endif %}">
+    <!-- Background Elements -->
+     
+    <div class="fixed inset-0 -z-10">
+        <div class="absolute inset-0 bg-[url('/static/img/black_bg.png')] bg-center bg-no-repeat bg-cover"></div>
+        <!-- Reduce opacity of the gradient overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-bg-dark/30 via-[#131326]/30 to-[#0A0A14]/30 backdrop-blur-none"></div>
+    </div>
+
+    <nav class="relative z-50 bg-bg-dark/90 border-b border-primary/20 backdrop-blur-sm h-20">
+        <div class="max-w-7xl mx-auto h-full">
+            <!-- Left: Logo + Links -->
+            <div class="absolute left-0 h-full flex items-center pl-4 gap-6">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <img class="h-14 w-auto" src="/static/img/icon.png" alt="Solo Leveling Logo">
+                    <a href="/dashboard" class="text-primary font-orbitron font-bold text-3xl">SOLO LEVELING</a>
+                </div>
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="/dashboard" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Dashboard</a>
+                    <a href="/quests" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Quests</a>
+                    <a href="/shop" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">Shop</a>
+                </div>
+            </div>
+    
+            {% if current_user.is_authenticated %}
+            <!-- Center: Currency -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 h-full flex items-center space-x-4 text-sm ml-10">
+                <!-- Gold -->
+                <div class="flex items-center bg-gradient-to-br from-yellow-900 to-yellow-700 rounded-xl px-3 py-1.5 space-x-2 shadow-md border border-yellow-600">
+                    <img src="{{ url_for('static', filename='icons/gold.ico') }}" alt="Gold" class="w-7 h-7 rounded-sm shadow-inner">
+                    <span class="font-semibold text-yellow-300">{{ current_user.gold }}</span>
+                </div>
+                <!-- Crystals -->
+                <div class="flex items-center bg-gradient-to-br from-blue-900 to-indigo-800 rounded-xl px-3 py-1.5 space-x-2 shadow-md border border-blue-500">
+                    <img src="{{ url_for('static', filename='icons/crystal.ico') }}" alt="Crystals" class="w-7 h-7 rounded-sm shadow-lg animate-pulse">
+                    <span class="font-semibold text-blue-300">{{ current_user.crystals }}</span>
+                </div>
+                <!-- Essence Dust -->
+                <div class="flex items-center bg-gradient-to-br from-purple-900 to-fuchsia-800 rounded-xl px-3 py-1.5 space-x-2 shadow-md border border-fuchsia-500">
+                    <img src="{{ url_for('static', filename='icons/essence_dust.ico') }}" alt="Essence Dust" class="w-7 h-7 rounded-sm shadow-md">
+                    <span class="font-semibold text-fuchsia-300">{{ current_user.essence_dust }}</span>
+                </div>
+                <!-- Shadow Tokens -->
+                <div class="flex items-center bg-gradient-to-br from-indigo-900 to-purple-800 rounded-xl px-3 py-1.5 space-x-2 shadow-lg border border-purple-600">
+                    <img src="{{ url_for('static', filename='icons/shadow_token.ico') }}" alt="Shadow Tokens" class="w-7 h-7 rounded-sm shadow-xl animate-pulse">
+                    <span class="font-semibold text-indigo-100">{{ current_user.shadow_tokens }}</span>
+                </div>
+            </div>
+    
+            <!-- Right: Username + Logout -->
+            <div class="absolute right-0 h-full flex items-center gap-4 pr-6">
+                <span class="text-text-muted text-base">{{ current_user.username }}</span>
+                <a href="/auth/logout" class="text-text-primary hover:text-primary px-3 py-2 rounded-md text-base font-medium transition-colors duration-200">Logout</a>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+    
+
+
+    
+
+    <!-- Main Content -->
+    <main class="relative z-10 {% if request.endpoint == 'dashboard' %}dashboard-content{% elif request.endpoint == 'quests' %}quests-content{% endif %}">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+
+<script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuButton = document.querySelector('[aria-controls="mobile-menu"]');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', function() {
+                const isExpanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+                mobileMenuButton.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    });
+</script>
+{% block scripts %}{% endblock %}

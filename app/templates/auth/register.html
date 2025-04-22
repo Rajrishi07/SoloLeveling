@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if get_flashed_messages()[-1] %}
+<button class="btn bg-red text-red-500 font-bold py-2 mt-8 w-full disabled">{{get_flashed_messages()[-1]}}</button>
+{%endif%}
+
+<div class="w-full p-2 min-h-[calc(100vh-60px)] flex items-center justify-center">
+    <div class="rounded-lg p-6 transition-all duration-300 backdrop-blur-md border border-[#00BFFF]/20 bg-[rgba(20,30,45,0.7)] shadow-lg shadow-[#00BFFF]/10 max-w-md w-full">
+        <div class="mb-4 pb-2 border-b border-[#00BFFF]/20">
+            <h1 class="text-[#00BFFF] text-2xl text-center font-orbitron font-bold drop-shadow-[0_0_5px_rgba(0,191,255,0.7)]">Register</h1>
+        </div>
+        <form action="{{ url_for('auth.register') }}" method="post" novalidate>
+            <div class="mb-4">
+                <label for="username" class="block text-[#CCCCCC] text-sm font-medium mb-1">Username</label>
+                <input type="text" class="form-control bg-[#0F0F1A]/80 border border-[#00BFFF]/10 text-[#CCCCCC] rounded-md p-2 w-full" id="username" name="username" required>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-[#CCCCCC] text-sm font-medium mb-1">Email</label>
+                <input type="email" class="form-control bg-[#0F0F1A]/80 border border-[#00BFFF]/10 text-[#CCCCCC] rounded-md p-2 w-full" id="email" name="email" required>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-[#CCCCCC] text-sm font-medium mb-1">Password</label>
+                <input type="password" class="form-control bg-[#0F0F1A]/80 border border-[#00BFFF]/10 text-[#CCCCCC] rounded-md p-2 w-full" id="password" name="password" required>
+            </div>
+            <div class="mb-4">
+                <label for="password2" class="block text-[#CCCCCC] text-sm font-medium mb-1">Repeat Password</label>
+                <input type="password" class="form-control bg-[#0F0F1A]/80 border border-[#00BFFF]/10 text-[#CCCCCC] rounded-md p-2 w-full" id="password2" name="password2" required>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn bg-[#00BFFF] text-white font-bold py-2 rounded-md w-full transition-all duration-300 hover:bg-[#00A3CC]">Register</button>
+            </div>
+        </form>
+        <div class="mt-4 text-center">
+            <p class="text-[#CCCCCC] text-sm">Already have an account? <a href="{{ url_for('auth.login') }}" class="text-[#00BFFF] hover:text-[#00A3CC]">Click to Sign In!</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

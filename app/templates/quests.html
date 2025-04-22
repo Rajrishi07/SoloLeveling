@@ -1,0 +1,603 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <!-- Main Content Area -->
+<div class="w-full min-h-[calc(100vh-60px)] relative">
+    <!-- Main Content Area -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-4 mt-5">
+
+        <!-- Wishpers of Fate -->
+        <div class="sl-card rounded-xl p-3 border border-[#00FF99]/30 bg-[#131326]/50 backdrop-blur-md flex flex-col card-glow-success">
+            <h4 class="text-[#00FF99] text-xl font-bold font-orbitron mb-2 flex items-center gap-1.5 border-b border-[#00FF99]/20 pb-2 drop-shadow-[0_0_3px_rgba(0,255,153,0.5)]">
+                <i class="fas fa-map-marked-alt text-xs"></i>Whispers of Fate
+                
+                <span class="ml-auto px-1 py-0.5 rounded-md text-xs font-bold bg-[#00FF99]/20 text-[#00FF99] border border-[#FF3C3C]/30" title="Resets Midnight">
+                    <i class="fas fa-solid fa-clock"></i>
+                </span>
+            </h4>
+            
+            <div class="flex-1 overflow-y-auto scrollbar-hide">
+                <div class="flex flex-col gap-2">
+                    {% for quest in habit_quests %}
+                    <!-- For Habit Quests (Whispers of Fate) -->
+                    <div class="bg-[#0A0A14]/70 rounded-md p-2.5 transition-all duration-300 hover:translate-x-1 hover:bg-[#0A0A14]/90 relative overflow-hidden group border border-[#00FF99]/10 shadow-md"
+                        data-quest-id="{{ quest._id }}"
+                        data-quest-name="{{ quest.name }}"
+                        data-quest-xp='{{ quest.category_xp | tojson | safe }}'
+                        data-quest-streakeligible = "{{ quest.streak_eligible }}"
+                        data-quest-difficulty="{{ quest.difficulty }}"
+                        {% if current_user.is_quest_completed(quest._id) %}
+                        class="opacity-50 pointer-events-none"
+                        {% else %}
+                        onclick="handleQuestClick(this)"
+                        {% endif %}>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <h4 class="text-[#00FF99] text-sm font-bold drop-shadow-[0_0_3px_rgba(0,255,153,0.5)]">
+                                {{ quest.name }}
+                                {% if current_user.is_quest_completed(quest._id) %}
+                                <span class="ml-2 text-[#00FF99] text-xs">(Completed)</span>
+                                {% endif %}
+                            </h4>
+                            <div class="flex items-center gap-1">
+                                {% if quest.penalty %}
+                                <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#FF3C3C]/20 text-[#FF3C3C] border border-[#FF3C3C]/30" title="Has Penalty">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                                {% endif %}
+                                <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#F0A500]/20 text-[#F0A500] border border-[#F0A500]/30">
+                                    {{ quest.difficulty }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="overflow-hidden max-h-0 group-hover:max-h-24 transition-all duration-300">
+                            <p class="text-[#CCCCCC] text-xs mb-1.5">
+                                {{ quest.description }}
+                            </p>
+                            {% if quest.penalty and quest.penalty_task %}
+                            <div class="mt-1 p-1.5 bg-[#FF3C3C]/10 border border-[#FF3C3C]/30 rounded-md">
+                                <p class="text-[#FF3C3C] text-xs font-medium flex items-center gap-1">
+                                    <i class="fas fa-skull text-[9px]"></i>Penalty Task:
+                                </p>
+                                <p class="text-[#CCCCCC] text-xs">{{ quest.penalty_task.name }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-1.5">
+                            {% for category, xp in quest.category_xp.items() %}
+                            <span class="bg-[#00FF99]/10 border border-[#00FF99]/30 px-1.5 py-0.5 rounded-sm text-xs text-[#00FF99]">
+                                {{ category.capitalize() }}: +{{ xp }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% if quest.streak_eligible %}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Marked Hunts -->
+        <div class="sl-card rounded-xl p-3 border border-[#00BFFF]/30 bg-[#131326]/50 backdrop-blur-md flex flex-col card-glow-primary">
+            <h4 class="text-[#00BFFF] text-xl font-bold font-orbitron mb-2 flex items-center gap-1.5 border-b border-[#00BFFF]/20 pb-2">
+                <i class="fas fa-sun text-xs"></i>Marked Hunts
+                
+                <span class="ml-auto px-1 py-0.5 rounded-md text-xs font-bold bg-[#00BFFF]/20 text-[#00BFFF] border border-[#FF3C3C]/30" title="Resets Midnight">
+                    <i class="fas fa-solid fa-clock"></i>
+                </span>
+
+            </h4>
+            
+            <div class="flex-1 overflow-y-auto scrollbar-hide">
+                <div class="flex flex-col gap-2">
+                    {% for quest in daily_quests %}
+                    <div class="bg-[#0A0A14]/70 rounded-md p-2.5 transition-all duration-300 hover:translate-x-1 hover:bg-[#0A0A14]/90 relative overflow-hidden group border border-[#00BFFF]/10 shadow-md"
+                        data-quest-id="{{ quest._id }}"
+                        data-quest-name="{{ quest.name }}"
+                        data-quest-xp='{{ quest.category_xp | tojson | safe }}'
+                        data-quest-streakeligible = "{{ quest.streak_eligible }}"
+                        data-quest-difficulty="{{ quest.difficulty }}"
+                        {% if current_user.is_quest_completed(quest._id) %}
+                        class="opacity-50 pointer-events-none"
+                        {% else %}
+                        onclick="handleQuestClick(this)"
+                        {% endif %}>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <h4 class="text-[#00BFFF] text-sm font-bold drop-shadow-[0_0_3px_rgba(0,191,255,0.5)]">{{ quest.name }}
+                                {% if current_user.is_quest_completed(quest._id) %}
+                                <span class="ml-2 text-[#00FF99] text-xs">(Completed)</span>
+                                {% endif %}
+                            </h4>
+                            <div class="flex items-center gap-1">
+                                {% if quest.penalty %}
+                                <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#FF3C3C]/20 text-[#FF3C3C] border border-[#FF3C3C]/30" title="Has Penalty">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                                {% endif %}
+                                <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#F0A500]/20 text-[#F0A500] border border-[#F0A500]/30">
+                                    {{ quest.difficulty }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="overflow-hidden max-h-0 group-hover:max-h-24 transition-all duration-300">
+                            <p class="text-[#CCCCCC] text-xs mb-1.5">
+                                {{ quest.description }}
+                            </p>
+                            {% if quest.penalty and quest.penalty_task %}
+                            <div class="mt-1 p-1.5 bg-[#FF3C3C]/10 border border-[#FF3C3C]/30 rounded-md">
+                                <p class="text-[#FF3C3C] text-xs font-medium flex items-center gap-1">
+                                    <i class="fas fa-skull text-[9px]"></i>Penalty Task:
+                                </p>
+                                <p class="text-[#CCCCCC] text-xs">{{ quest.penalty_task.name }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-1.5">
+                            {% for category, xp in quest.category_xp.items() %}
+                            <span class="bg-[#7FDBFF]/10 border border-[#7FDBFF]/30 px-1.5 py-0.5 rounded-sm text-xs text-[#7FDBFF]">
+                                {{ category.capitalize() }}: +{{ xp }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% if quest.streak_eligible %}
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <!-- Riftborn Trials -->
+            <div class="sl-card rounded-xl p-3 border border-[#FF6B00]/30 bg-[#131326]/50 backdrop-blur-md flex flex-col card-glow-fire">
+                <h4 class="text-[#FF6B00] text-xl font-bold font-orbitron mb-2 flex items-center gap-1.5 border-b border-[#FF6B00]/20 pb-2 drop-shadow-[0_0_3px_rgba(255,107,0,0.5)]">
+                    <i class="fas fa-crown text-xs"></i>Riftborn Trials
+                    
+                    <span class="ml-auto px-1 py-0.5 rounded-md text-xs font-bold bg-[#FF6B00]/20 text-[#FF6B00] border border-[#FF3C3C]/30" title="Resets Weekly">
+                        <i class="fas fa-solid fa-clock"></i>
+                    </span>
+                </h4>
+                
+                <div class="flex-1 overflow-y-auto scrollbar-hide">
+                    <div class="flex flex-col gap-2">
+                        {% for quest in challenge_quest %}
+                        <div class="bg-[#0A0A14]/70 rounded-md p-2.5 transition-all duration-300 hover:translate-x-1 hover:bg-[#0A0A14]/90 relative overflow-hidden group border border-[#FF6B00]/10 shadow-md"
+                            data-quest-id="{{ quest._id }}"
+                            data-quest-name="{{ quest.name }}"
+                            data-quest-xp='{{ quest.category_xp | tojson | safe }}'
+                            data-quest-streakeligible = "{{ quest.streak_eligible }}"
+                            data-quest-difficulty="{{ quest.difficulty }}"
+                            {% if not current_user.is_quest_completed(quest._id) %}
+                               onclick="handleQuestClick(this)"
+                            {% endif %}>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <h4 class="text-[#FF6B00] text-sm font-bold drop-shadow-[0_0_3px_rgba(0,255,153,0.5)]">
+                                    {{ quest.name }}
+                                    {% if current_user.is_quest_completed(quest._id) %}
+                                    <span class="ml-2 text-[#00FF99] text-xs">(Completed)</span>
+                                    {% endif %}
+                                </h4>
+                                <div class="flex items-center gap-1">
+                                    {% if quest.penalty %}
+                                    <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#FF3C3C]/20 text-[#FF3C3C] border border-[#FF3C3C]/30" title="Has Penalty">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    {% endif %}
+                                    <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#F0A500]/20 text-[#F0A500] border border-[#F0A500]/30">
+                                        {{ quest.difficulty }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="overflow-hidden max-h-0 group-hover:max-h-24 transition-all duration-300">
+                                <p class="text-[#CCCCCC] text-xs mb-1.5">
+                                    {{ quest.description }}
+                                </p>
+                                {% if quest.penalty and quest.penalty_task %}
+                                <div class="mt-1 p-1.5 bg-[#FF3C3C]/10 border border-[#FF3C3C]/30 rounded-md">
+                                    <p class="text-[#FF3C3C] text-xs font-medium flex items-center gap-1">
+                                        <i class="fas fa-skull text-[9px]"></i>Penalty Task:
+                                    </p>
+                                    <p class="text-[#CCCCCC] text-xs">{{ quest.penalty_task.name }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex flex-wrap gap-1 mt-1.5">
+                                {% for category, xp in quest.category_xp.items() %}
+                                <span class="bg-[#FF6B00]/10 border border-[#FF6B00]/30 px-1.5 py-0.5 rounded-sm text-xs text-[#FF6B00]">
+                                    {{ category.capitalize() }}: +{{ xp }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                            {% if quest.streak_eligible %}
+                            <div class="mt-1.5 h-1 bg-[#0F0F1A]/50 rounded overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-[#FF6B00] to-[#FF6B00]/50 transition-all duration-300 w-0"></div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!-- Wraith's Call -->
+            <div class="sl-card rounded-xl p-3 border border-[#FF3C3C]/30 bg-[#131326]/50 backdrop-blur-md flex flex-col card-glow-cursed">
+                <h4 class="text-[#FF3C3C] text-xl font-bold font-orbitron mb-2 flex items-center gap-1.5 border-b border-[#FF3C3C]/20 pb-2 drop-shadow-[0_0_3px_rgba(255,60,60,0.5)]">
+                    <i class="fas fa-dragon text-xs"></i>Wraith’s Call
+                    
+                    <span class="ml-auto px-1 py-0.5 rounded-md text-xs font-bold bg-[#FF3C3C]/20 text-[#FF3C3C] border border-[#FF3C3C]/30" title="Resets Upon Completion or monthly(with penalty)">
+                        <i class="fas fa-solid fa-clock"></i>
+                    </span>
+                </h4>
+                
+                <div class="flex-1 overflow-y-auto scrollbar-hide">
+                    <div class="flex flex-col gap-2">
+                        {% for quest in elite_quest %}
+                        <div class="bg-[#0A0A14]/70 rounded-md p-2.5 transition-all duration-300 hover:translate-x-1 hover:bg-[#0A0A14]/90 relative overflow-hidden group border border-[#FF3C3C]/10 shadow-md"
+                            data-quest-id="{{ quest._id }}"
+                            data-quest-name="{{ quest.name }}"
+                            data-quest-xp='{{ quest.category_xp | tojson | safe }}'
+                            data-quest-streakeligible = "{{ quest.streak_eligible }}"
+                            data-quest-difficulty="{{ quest.difficulty }}"
+                            {if current_user.is_quest_completed(quest._id) %}
+                            onclick="handleQuestClick(this)">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <h4 class="text-[#FF3C3C] text-sm font-bold drop-shadow-[0_0_3px_rgba(255,60,60,0.5)]">{{ quest.name }}</h4>
+                                <div class="flex items-center gap-1">
+                                    {% if quest.penalty %}
+                                    <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#FF3C3C]/20 text-[#FF3C3C] border border-[#FF3C3C]/30" title="Has Penalty">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </span>
+                                    {% endif %}
+                                    <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#F0A500]/20 text-[#F0A500] border border-[#F0A500]/30">
+                                        {{ quest.difficulty }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="overflow-hidden max-h-0 group-hover:max-h-24 transition-all duration-300">
+                                <p class="text-[#CCCCCC] text-xs mb-1.5">
+                                    {{ quest.description }}
+                                </p>
+                                {% if quest.penalty and quest.penalty_task %}
+                                <div class="mt-1 p-1.5 bg-[#FF3C3C]/10 border border-[#FF3C3C]/30 rounded-md">
+                                    <p class="text-[#FF3C3C] text-xs font-medium flex items-center gap-1">
+                                        <i class="fas fa-skull text-[9px]"></i>Penalty Task:
+                                    </p>
+                                    <p class="text-[#CCCCCC] text-xs">{{ quest.penalty_task.name }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex flex-wrap gap-1 mt-1.5">
+                                {% for category, xp in quest.category_xp.items() %}
+                                <span class="bg-[#FF3C3C]/10 border border-[#FF3C3C]/30 px-1.5 py-0.5 rounded-sm text-xs text-[#FF3C3C]">
+                                    {{ category.capitalize() }}: +{{ xp }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                            {% if quest.streak_eligible %}
+                            <div class="mt-1.5 h-1 bg-[#0F0F1A]/50 rounded overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-[#FF3C3C] to-[#FF3C3C]/50 transition-all duration-300 w-0"></div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Phantom's pact -->
+        <div class="sl-card rounded-xl p-3 border border-[#FFD700]/30 bg-[#131326]/50 backdrop-blur-md flex flex-col card-glow-gold">
+            <h4 class="text-[#FFD700] text-xl font-bold font-orbitron mb-2 flex items-center gap-1.5 border-b border-[#FFD700]/20 pb-2 drop-shadow-[0_0_3px_rgba(255,215,0,0.5)]">
+                <i class="fas fa-gem text-xs"></i>Phantom’s Pact
+                
+                <span class="ml-auto px-1 py-0.5 rounded-md text-xs font-bold bg-[#CCCCCC]/20 text-[#CCCCCC] border border-[#FF3C3C]/30" title="Resets Upon Completion or monthly(with penalty)">
+                    <i class="fas fa-solid fa-clock"></i>
+                </span>
+            </h4>
+            
+            <div class="flex-1 overflow-y-auto scrollbar-hide">
+                <div class="flex flex-col gap-2">
+                    {% for quest in exclusive_quests %}
+                    <div class="group bg-[#0A0A14] border border-[#FFD700]/30 rounded-md p-2 mb-2 hover:bg-[#0F0F1A] transition-all duration-300 cursor-pointer relative overflow-hidden"
+                        data-quest-id="{{ quest._id }}"
+                        data-quest-name="{{ quest.name }}"
+                        data-quest-xp='{{ quest.category_xp | tojson | safe }}'
+                        data-quest-streakeligible = "{{ quest.streak_eligible }}"
+                        data-quest-difficulty="{{ quest.difficulty }}"
+                        {% if current_user.is_quest_completed(quest._id) %}
+                        class="opacity-50 pointer-events-none"
+                        {% else %}
+                        onclick="handleQuestClick(this)"
+                        {% endif %}>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <h4 class="text-[#FFD700] text-sm font-bold drop-shadow-[0_0_3px_rgba(255,215,0,0.5)]">
+                                {{ quest.name }}
+                                {% if current_user.is_quest_completed(quest._id) %}
+                                <span class="ml-2 text-[#00FF99] text-xs">(Completed)</span>
+                                {% endif %}
+                            </h4>
+                            <div class="flex items-center gap-1">
+                                {% if quest.penalty %}
+                                <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#FF3C3C]/20 text-[#FF3C3C] border border-[#FF3C3C]/30" title="Has Penalty">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                                {% endif %}
+                                <span class="px-1 py-0.5 rounded-md text-xs font-bold bg-[#F0A500]/20 text-[#F0A500] border border-[#F0A500]/30">
+                                    {{ quest.difficulty }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="overflow-hidden max-h-0 group-hover:max-h-24 transition-all duration-300">
+                            <p class="text-[#CCCCCC] text-xs mb-1.5">
+                                {{ quest.description }}
+                            </p>
+                            {% if quest.penalty and quest.penalty_task %}
+                            <div class="mt-1 p-1.5 bg-[#FF3C3C]/10 border border-[#FF3C3C]/30 rounded-md">
+                                <p class="text-[#FF3C3C] text-xs font-medium flex items-center gap-1">
+                                    <i class="fas fa-skull text-[9px]"></i>Penalty Task:
+                                </p>
+                                <p class="text-[#CCCCCC] text-xs">{{ quest.penalty_task.name }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="flex flex-wrap gap-1 mt-1.5">
+                            {% for category, xp in quest.category_xp.items() %}
+                            <span class="bg-[#FFD700]/10 border border-[#FFD700]/30 px-1.5 py-0.5 rounded-sm text-xs text-[#FFD700]">
+                                {{ category.capitalize() }}: +{{ xp }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% if quest.streak_eligible %}
+                        <div class="mt-1.5 h-1 bg-[#0F0F1A]/50 rounded overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-[#FFD700] to-[#FFD700]/50 transition-all duration-300 w-0"></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quest Completion Modal -->
+<div id="questModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="bg-[#0A0A14] border border-[#9D71EA]/30 rounded-lg p-4 max-w-md w-full shadow-2xl shadow-[#9D71EA]/20 card-glow-mystic">
+        <h3 class="text-[#9D71EA] text-xl font-bold font-orbitron mb-3 border-b border-[#9D71EA]/20 pb-2">Complete Quest</h3>
+        <p class="text-white text-2xl" id="questName">Quest Name</p>
+        <p class="text--white text-sm mb-4" id="questDifficulty">Difficulty</p>
+        <div class="mb-4">
+            <p class="text-[#9D71EA] text-sm mb-2 font-tech">XP Rewards:</p>
+            <div id="questXpRewards" class="flex flex-wrap gap-1.5"></div>
+        </div>
+        
+        <div class="flex justify-end gap-3">
+            <button onclick="closeQuestModal()" class="px-4 py-2 bg-[#131326] hover:bg-[#1F1F3A] text-white rounded-md transition-all duration-300 border border-[#9D71EA]/30">
+                Cancel
+            </button>
+            <button onclick="completeQuest()" class="px-4 py-2 bg-[#00FF99]/20 hover:bg-[#00FF99]/30 text-[#00FF99] rounded-md transition-all duration-300 border border-[#00FF99]/30">
+                Complete
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Add the same styles from dashboard.html */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Card glow effects */
+.card-glow-primary {
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.15);
+    transition: box-shadow 0.3s ease;
+}
+.card-glow-primary:hover {
+    box-shadow: 0 0 25px rgba(0, 191, 255, 0.3);
+}
+
+.card-glow-fire {
+    box-shadow: 0 0 15px rgba(255, 107, 0, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+}
+.card-glow-fire:hover {
+    box-shadow: 0 0 25px rgba(255, 107, 0, 0.3);
+}
+.card-glow-fire::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at bottom, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.card-glow-cursed {
+    box-shadow: 0 0 15px rgba(255, 60, 60, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+}
+.card-glow-cursed:hover {
+    box-shadow: 0 0 25px rgba(255, 60, 60, 0.3);
+}
+.card-glow-cursed::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 60%, rgba(255, 60, 60, 0.1) 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.card-glow-mystic {
+    box-shadow: 0 0 15px rgba(157, 113, 234, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+}
+.card-glow-mystic:hover {
+    box-shadow: 0 0 25px rgba(157, 113, 234, 0.4);
+}
+.card-glow-mystic::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(157, 113, 234, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.card-glow-gold {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+}
+.card-glow-gold:hover {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+}
+.card-glow-gold::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top, rgba(255, 215, 0, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Animation effects */
+@keyframes cursedShadow {
+    0% { text-shadow: 0 0 5px rgba(255, 60, 60, 0.5); }
+    50% { text-shadow: 0 0 10px rgba(255, 60, 60, 0.8); }
+    100% { text-shadow: 0 0 5px rgba(255, 60, 60, 0.5); }
+}
+
+@keyframes fireFlicker {
+    0% { text-shadow: 0 0 5px rgba(255, 107, 0, 0.5); }
+    25% { text-shadow: 0 0 7px rgba(255, 107, 0, 0.7); }
+    50% { text-shadow: 0 0 10px rgba(255, 107, 0, 0.5); }
+    75% { text-shadow: 0 0 6px rgba(255, 107, 0, 0.6); }
+    100% { text-shadow: 0 0 5px rgba(255, 107, 0, 0.5); }
+}
+
+@keyframes mysticPulse {
+    0% { text-shadow: 0 0 5px rgba(157, 113, 234, 0.5); }
+    50% { text-shadow: 0 0 12px rgba(157, 113, 234, 0.8), 0 0 20px rgba(157, 113, 234, 0.4); }
+    100% { text-shadow: 0 0 5px rgba(157, 113, 234, 0.5); }
+}
+
+@keyframes goldShimmer {
+    0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+    25% { text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
+    50% { text-shadow: 0 0 12px rgba(255, 215, 0, 0.9), 0 0 20px rgba(255, 215, 0, 0.4); }
+    75% { text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
+    100% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+}
+
+.text-[#FF3C3C] {
+    animation: cursedShadow 3s ease-in-out infinite;
+}
+
+.text-[#FF6B00] {
+    animation: fireFlicker 4s ease-in-out infinite;
+}
+
+.text-[#9D71EA] {
+    animation: mysticPulse 6s ease-in-out infinite;
+}
+
+.text-[#FFD700] {
+    animation: goldShimmer 5s ease-in-out infinite;
+}
+</style>
+
+<script>
+let currentQuestId = null;
+let currentQuestXp = null;
+let currentQuestStreakEligible = false;
+
+function handleQuestClick(element) {
+    const questId = element.dataset.questId;
+    const questName = element.dataset.questName;
+    const questXp = JSON.parse(element.dataset.questXp);
+    const streakEligible = element.dataset.questStreakeligible === "True";
+    const questDifficulty = element.dataset.questDifficulty;
+
+    currentQuestId = questId;
+    currentQuestName = questName;
+    currentQuestXp = questXp;
+    currentQuestStreakEligible = streakEligible;
+    currentQuestDifficulty = questDifficulty;
+
+    // Set modal content
+    document.getElementById('questName').textContent = questName;
+    document.getElementById('questDifficulty').textContent = questDifficulty;
+    console.log('quest difficulty:', currentQuestDifficulty);
+    // Clear and populate XP rewards
+    const rewardsContainer = document.getElementById('questXpRewards');
+    rewardsContainer.innerHTML = '';
+    
+    for (const [category, xp] of Object.entries(questXp)) {
+        const badge = document.createElement('span');
+        badge.className = 'bg-[#9D71EA]/10 border border-[#9D71EA]/30 px-2 py-1 rounded-md text-xs text-[#9D71EA]';
+        badge.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)}: +${xp}`;
+        rewardsContainer.appendChild(badge);
+    }
+    
+    // Show modal
+    document.getElementById('questModal').classList.remove('hidden');
+}
+
+function closeQuestModal() {
+    document.getElementById('questModal').classList.add('hidden');
+}
+
+function completeQuest() {
+    // Send completion data to server
+    console.log(currentQuestId);
+    console.log(currentQuestName);
+    console.log(currentQuestXp);
+    console.log(currentQuestStreakEligible);
+    console.log(currentQuestDifficulty);
+    fetch('/complete_quest', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            questId: currentQuestId,
+            questName: currentQuestName,
+            categoryXp: currentQuestXp,
+            streakEligible: currentQuestStreakEligible,
+            difficulty: currentQuestDifficulty
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Refresh the page to show updated quests
+            window.location.reload();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while completing the quest.');
+    });
+    
+    closeQuestModal();
+}
+
+// Close modal when clicking outside
+document.getElementById('questModal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeQuestModal();
+    }
+});
+</script>
+{% endblock %}
+
