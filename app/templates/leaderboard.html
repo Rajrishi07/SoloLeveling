@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="w-full min-h-[calc(100vh-60px)] relative">
+    <div class="w-full px-4 py-3">
+        <h1 class="text-primary font-tech text-2xl">Leaderboard</h1>
+    </div>
+    <div class="px-4 mt-2 space-y-4">
+        {% for user in users %}
+        <div class="sl-card rounded-xl p-4 shadow-xl backdrop-blur-md border border-[#1F0954]/40 hover:scale-[1.01] transition-all duration-300 card-glow-mystic space-y-3"
+     style="background: linear-gradient(to bottom, #0b1c2c, #000000);">
+
+
+            <!-- Compact Stats Row -->
+            <div class="grid grid-cols-4 text-center text-sm font-tech text-white mt-2">
+                 <!-- Rank Icon -->
+                 <div class="text-xl">
+                    {% if loop.index == 1 %}
+                    <i class="fas fa-crown text-yellow-400">{{loop.index}}</i>
+                    {% elif loop.index == 2 %}
+                    <i class="fas fa-medal text-gray-400">{{loop.index}}</i>
+                    {% elif loop.index == 3 %}
+                    <i class="fas fa-star text-yellow-300">{{loop.index}}</i>
+                    {% else %}
+                    <span class="text-white font-tech text-3xl">{{loop.index}}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Username & Title -->
+                <div class="text-center flex-1">
+                    <p class="text-white font-tech text-lg text-primary font-semibold">{{ user.username }}</p>
+                    <p class="text-[#9D71EA] font-tech text-xs italic">{{ user.title }}</p>
+                </div>
+                <div>
+                    <p class="text-white font-orbitron text-lg">{{ user.rank }} - {{ user.level }}</p>
+                </div>
+                <div>
+                    <p class="text-[#9D71EA] font-orbitron text-lg">{{ user.active_days }}d</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

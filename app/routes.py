@@ -116,8 +116,6 @@ def create_routes(app):
                     today_stat = log
                     break
 
-            print("Today's stat:", today_stat)
-
             streaks = current_user.streaks  # A dict: {task_id: {streak_data}}
             # Prepare list of streaks with task names
             streak_info = []
@@ -210,5 +208,13 @@ def create_routes(app):
         print(items)
         return render_template("shop.html", shop_items=items)
 
-
+    @app.route('/leaderboard')
+    @login_required
+    def leaderboard():
+        users = list(mongo.db.users.find())
+        for user in users:
+            first_exam_date = min([exam['timestamp'].date() for exam in user.get('exam_history', [])]) if user.get('exam_history') else date.today()
+            user['active_days'] = (date.today() - first_exam_date).days
+        users.sort(key=lambda x: x['xp'], reverse=True)
+        return render_template('leaderboard.html', users=users)
     return app
