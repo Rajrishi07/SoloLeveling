@@ -1,6 +1,49 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <!-- Quest Modal -->
+  <div id="questModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-[#0A0A14] border border-[#00BFFF]/30 rounded-xl shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="p-4 border-b border-[#00BFFF]/20">
+        <div class="flex justify-between items-center">
+          <h3 id="questName" class="text-[#00BFFF] text-lg font-bold font-orbitron"></h3>
+          <button onclick="closeQuestModal()" class="text-gray-400 hover:text-white">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="mt-2">
+          <span id="questDifficulty" class="px-2 py-1 rounded-md text-xs font-bold bg-[#F0A500]/20 text-[#F0A500] border border-[#F0A500]/30"></span>
+        </div>
+      </div>
+      <!-- Modal Content -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="space-y-2">
+          <h4 class="text-[#00BFFF] text-sm font-bold">Description:</h4>
+          <p id="questDescription" class="text-gray-300 text-sm leading-relaxed"></p>
+        </div>
+        <div class="space-y-2">
+          <h4 class="text-[#00BFFF] text-sm font-bold">Rewards:</h4>
+          <div id="questXpRewards" class="flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-[#00BFFF]/20">
+        <button onclick="completeQuest()" class="w-full bg-[#00BFFF] hover:bg-[#00BFFF]/80 text-black font-bold py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2">
+          <i class="fas fa-check"></i>
+          Complete Quest
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden">
+    <div class="text-center">
+      <div class="w-16 h-16 border-4 border-t-[#00BFFF] border-r-[#00BFFF]/50 border-b-[#00BFFF]/30 border-l-transparent rounded-full animate-spin mb-4"></div>
+      <p class="text-[#00BFFF] font-orbitron text-lg animate-pulse">Loading Quests...</p>
+    </div>
+  </div>
 
   <!-- Main Content Area -->
 <div class="w-full min-h-[calc(100vh-60px)] relative">
@@ -522,6 +565,36 @@
 </style>
 
 <script>
+// Loading state management
+let loadingTimeout;
+
+function showLoading() {
+    // Clear any existing timeout
+    if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+    }
+    // Only show loading if it takes more than 500ms
+    loadingTimeout = setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.remove('hidden');
+    }, 500);
+}
+
+function hideLoading() {
+    // Clear the timeout if content loads before 500ms
+    if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+    }
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+// Show loading on initial page load
+showLoading();
+
+// Hide loading when content is loaded
+window.addEventListener('load', () => {
+    hideLoading();
+});
+
 let currentQuestId = null;
 let currentQuestXp = null;
 let currentQuestStreakEligible = false;
@@ -587,7 +660,8 @@ function completeQuest() {
     .then(data => {
         if (data.success) {
             // Refresh the page to show updated quests
-            window.location.reload();
+            showLoading();
+window.location.reload();
         } else {
             alert('Error: ' + data.message);
         }
