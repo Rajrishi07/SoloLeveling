@@ -196,8 +196,7 @@ class User(UserMixin):
             print("Refreshing Daily Quests")
             daily_quests = generate_quest(type="daily", user=self)
             if daily_quests:
-                if self.last_daily_refresh is None:
-                    self.check_debuffs()
+                self.check_debuffs()
                 # Insert quests into tasks collection and get their IDs
                 print("Inserting Daily Quest:")
                 quest_ids = []
@@ -440,8 +439,11 @@ class User(UserMixin):
         incomplete_tasks = [task_id for task_id in all_task_ids if task_id not in completed]
 
         active_quests = set(self.daily_quests) | set(self.habit_quests)
+        print("Active Quests:", active_quests)
+        print("Completed Quests:", completed)
+        print("Incomplete Tasks:", incomplete_tasks)
         self.completed_quests = list(set(completed) - active_quests)
-
+        print("Updated Completed Quests:", self.completed_quests)
         mongo.db.users.update_one(
             {"_id": self._id},
             {"$set": {"completed_quests": self.completed_quests}}
@@ -458,11 +460,11 @@ class User(UserMixin):
             task = mongo.db.tasks.find_one({'_id': task_id})
             task_log = {
                 "user_id": self._id,
-                "task_name": task_name,
+                "task_name": task['name'],
                 "date": datetime.utcnow(),
                 "status": "failed",
                 "reason": None,
-                "category_xp": adjusted_category_xp
+                "category_xp": task["category_xp"]
             }
             mongo.db.tasks_log.insert_one(task_log)
 
