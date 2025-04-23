@@ -438,6 +438,7 @@ class User(UserMixin):
         completed = set(self.completed_quests)
         incomplete_tasks = [task_id for task_id in all_task_ids if task_id not in completed]
 
+    
         active_quests = set(self.daily_quests) | set(self.habit_quests)
         print("Active Quests:", active_quests)
         print("Completed Quests:", completed)
@@ -455,6 +456,10 @@ class User(UserMixin):
             user_data = mongo.db.users.find_one({'_id': self._id}, {"active_debuffs": 1})
             active_debuffs = user_data.get('active_debuffs', [])
 
+        for debuff in active_debuffs:
+            debuff['duration_days'] -= 1
+            if debuff['duration_days'] <= 0:
+                active_debuffs.remove(debuff)
         # Apply penalties for incomplete tasks
         for task_id in incomplete_tasks:
             task = mongo.db.tasks.find_one({'_id': task_id})
