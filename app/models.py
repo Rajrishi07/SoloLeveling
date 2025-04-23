@@ -196,7 +196,8 @@ class User(UserMixin):
             print("Refreshing Daily Quests")
             daily_quests = generate_quest(type="daily", user=self)
             if daily_quests:
-                self.check_debuffs();
+                if self.last_daily_refresh is None:
+                    self.check_debuffs()
                 # Insert quests into tasks collection and get their IDs
                 print("Inserting Daily Quest:")
                 quest_ids = []
@@ -456,7 +457,7 @@ class User(UserMixin):
         for task_id in incomplete_tasks:
             task = mongo.db.tasks.find_one({'_id': task_id})
             task_log = {
-                "user_id": ObjectId(user_id),
+                "user_id": self._id,
                 "task_name": task_name,
                 "date": datetime.utcnow(),
                 "status": "failed",
