@@ -222,7 +222,7 @@ class User(UserMixin):
                 self.last_daily_refresh = today
                 
 
-        if self.last_weekly_refresh is None or (datetime.now() - self.last_weekly_refresh) > timedelta(days=7):
+        if datetime.utcnow().weekday() == 0 or self.weekly_quests is None:
             print("Refreshing Weekly Quests")
             weekly_quests = generate_quest(type="weekly", user=self)
             if weekly_quests:
@@ -544,5 +544,6 @@ class User(UserMixin):
                 {"_id": self._id},
                 {"$set": {"epic_quests": []}}
             )
-            
+
+        
     
